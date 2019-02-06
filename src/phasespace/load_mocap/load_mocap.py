@@ -505,7 +505,10 @@ class PhasespaceMocapSource(OnlineMocapSource):
         OWL.owlSetInteger(OWL.OWL_STREAMING, OWL.OWL_ENABLE)
 
         # Check for errors
+        
+
         if OWL.owlGetError() != OWL.OWL_NO_ERROR:
+            print('%s',(OWL.owlGetError()))
             raise RuntimeError('An error occurred while connecting to the mocap server')
 
         # Start the reader thread

@@ -27,9 +27,9 @@ def main():
     rospy.init_node('mocap_streamer')
 
     #Load the mocap stream
-    ip = rospy.get_param('phasespace/ip', '192.168.1.120')
-    with load_mocap.PhasespaceMocapSource(ip, num_points=32, 
-                                     framerate=50).get_stream() as mocap:
+    ip = rospy.get_param('phasespace/ip', '192.168.0.6')
+    with load_mocap.PhasespaceMocapSource(ip, num_points=10, 
+                                     framerate=480).get_stream() as mocap:
 
         #Play the points from the mocap stream
         #Loop until the node is killed with Ctrl+C
@@ -51,8 +51,8 @@ def main():
             for i in range(frame.shape[0]):
                 point = geometry_msgs.Point32()
                 point.x = frame[i,0]/1000
-                point.y = frame[i,1]/1000
-                point.z = frame[i,2]/1000
+                point.y = -frame[i,2]/1000
+                point.z = frame[i,1]/1000
                 message.points.append(point)
             pub.publish(message)
             frame_num += 1

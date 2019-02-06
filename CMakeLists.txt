@@ -9,6 +9,8 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   sensor_msgs
   std_msgs
+  roscpp
+  PCL
 )
 
 ## System dependencies are found with CMake's conventions
@@ -116,7 +118,11 @@ catkin_package(
 # include_directories(include)
 include_directories(
   ${catkin_INCLUDE_DIRS}
+  ${PCL_INCLUDE_DIRS}
 )
+link_directories(${PCL_LIBRARY_DIRS})
+add_definitions(${PCL_DEFINITIONS})
+
 
 ## Declare a C++ library
 # add_library(phasespace
@@ -129,16 +135,17 @@ include_directories(
 # add_dependencies(phasespace ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
-# add_executable(phasespace_node src/phasespace_node.cpp)
+add_executable(phasespace_transform src/phasespace_transform.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 # add_dependencies(phasespace_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(phasespace_node
-#   ${catkin_LIBRARIES}
-# )
+ target_link_libraries(phasespace_transform
+   ${PCL_LIBRARIES}
+   ${Catkin_LIBRARIES}
+ )
 
 #############
 ## Install ##

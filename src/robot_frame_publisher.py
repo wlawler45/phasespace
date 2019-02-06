@@ -10,7 +10,9 @@ import argparse
 import json
 
 def point_cloud_to_array(message):
+    
     num_points = len(message.points)
+    print(num_points)
     data = np.empty((num_points, 3, 1))
     for i, point in enumerate(message.points):
         data[i,:,0] = [point.x, point.y, point.z]
@@ -45,18 +47,22 @@ class RobotTransformCalibrator:
         self.last_sample = rospy.get_time()
 
     def collect_samples(self, time=15.0):
+        print "hello"
         mocap_listener = rospy.Subscriber(self.mocap_topic, sensor_msgs.msg.PointCloud,
                 self.new_frame_callback)
         rospy.sleep(time)
         mocap_listener.unregister()
 
     def new_frame_callback(self, msg):
+        
         RATE = 5.0
         if rospy.get_time() >= self.last_sample + (1.0 / RATE):
             self.last_sample = rospy.get_time()
+            
             try:
                 (trans,rot) = self.tf_listener.lookupTransform(self.base_frame, self.parent_frame,
                         rospy.Time(0))
+                print "I didn't fail the transform"
                 point_cloud = point_cloud_to_array(msg)
                 if not np.isnan(point_cloud[self.marker,0,0]):
                     self.mocap_samples.append(np.concatenate((point_cloud[self.marker,:,0], np.array([1])))[:,None])
@@ -136,6 +142,7 @@ def load_robot_calibration(filepath):
 
 def main():
     # Specify: Robot base frame, marker parent frame, data file
+    print("point_cloud_to_array")
     parser = argparse.ArgumentParser()
     parser.add_argument('data_file', help='The file containing the robot calibration data')
     parser.add_argument('--calibrate', nargs=2)
